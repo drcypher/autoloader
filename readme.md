@@ -1,16 +1,12 @@
 ## About
+
 Autoloads JS files based on name when the class is needed.
 
 This module removes the needs of using require() all over your files. Simply
 define the autoloader to your codebase, and use the names relative to the files.
 
-## 2.0 Requirements
+**Important: The extension relies on the use of Proxies so you must run nodejs with the --harmony parameter!**
 
-2.0 Drastically changes how this project works. It now requires --harmony under Node 0.10, and the usage
- scenarios have completely changed. It now will replace underscores as seperators such as Foo_Bar instead
- of Foo.Bar.
-
- It also does not have to do any directory scanning and setting up tons of getters, simple Proxy on global catches unreferenced variables!
 
 ## Install
 
@@ -18,13 +14,12 @@ Install with npm install autoloader
 
 ## Usage
 
-**Important: You must run node with --harmony parameter!**
-
 The following line loads a namespace:
 
 	namespaceObject = require("autoloader")(baseFolderPath, namespaceObject, namespaceName)
 
 The three parameters serve the following purposes:
+
 1. *baseFolderPath*: It's the absolute path of the folder containing all the namespaced source files.
    It's used by the autoloader to convert symbolic name to real file paths.
 
@@ -71,7 +66,7 @@ File contents:
 		console.log('Bar loaded!');
 	};
 
-example.js:
+**/example.js**:
     
 	// Load the namespace
 	example = require("./autoloader")(__dirname + '/example', {}, 'example');
@@ -81,8 +76,18 @@ example.js:
 	var bar = new example.foo.Bar();
 
 
+Running the **example.js** file
+
+	node --harmony example
+
+yields the following output:
+
+	Pin loaded!
+	Bar loaded!
+
 
 ## Custom Loaders
+
 If you pass a function as the 1st argument, autoloader will execute that instead of
 loading by directory, allowing you to control what is returned.
 Callback signature
