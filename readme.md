@@ -4,9 +4,6 @@ Autoloads JS files based on name when the class is needed.
 This module removes the needs of using require() all over your files. Simply
 define the autoloader to your codebase, and use the names relative to the files.
 
-ie lib/Foo/Bar/Baz.js when you load 'lib/' makes Foo_Bar_Baz
-require('./lib/Foo/Bar/Baz.js') automatically and return the value.
-
 ## 2.0 Requirements
 
 2.0 Drastically changes how this project works. It now requires --harmony under Node 0.10, and the usage
@@ -21,49 +18,69 @@ Install with npm install autoloader
 
 ## Usage
 
-Run node with --harmony
+**Important: You must run node with --harmony parameter!**
 
-Folder structure:
+The following line loads a namespace:
 
-    /lib/
-        Foo/
-            Bar.js
-        Foo.js
-    test.js
-    package.json (main: 'test.js')
+	namespaceObject = require("autoloader")(baseFolderPath, namespaceObject, namespaceName)
+
+The three parameters serve the following purposes:
+1. *baseFolderPath*: It's the absolute path of the folder containing all the namespaced source files.
+   It's used by the autoloader to convert symbolic name to real file paths.
+
+2. *namespaceObject*: It's the object that will receive the autoloading functionality. Most of the times
+   you'll just pass a literal object which will serve as the autoloadable namespace.
+
+3. *namespaceName*: This is just an auxiliary parameter which will help make possible errors more
+   understandable. You should pass it the name of the namespace as a string.
+
+## Example
+
+Example folder structure:
+
+    /example/
+             foo/
+                 baz/
+                     Pin.js
+             Bar.js
+    /example.js
     
 File contents:
 
-lib/Foo.js:
+**/example/foo/baz/Pin.js**
 
-    module.exports = function() {
-        console.log("Foo")
-        Foo_Bar();
-    };
+	/**
+	 * Pin class.
+	 *
+	 * @class
+	 */
+	example.foo.baz.Pin = function()
+	{
+		console.log('Pin loaded!');
+	};
 
-lib/Foo/Bar.js:
+**/example/foo/Bar.js**
 
-    module.exports = function() {
-        console.log("Foo_Bar")
-    };
+	/**
+	 * Bar class.
+	 *
+	 * @class
+	 */
+	example.foo.Bar = function()
+	{
+		console.log('Bar loaded!');
+	};
 
-
-test.js:
+example.js:
     
-    require('autoloader')(__dirname + '/lib')
-    Foo();
+	// Load the namespace
+	example = require("./autoloader")(__dirname + '/example', {}, 'example');
+
+	// Use any class
+	var pin = new example.foo.baz.Pin();
+	var bar = new example.foo.Bar();
 
 
-Loading the module would print to screen:
-
-    Foo
-    Foo_Bar
-
-You may optionally pass an object as the 2nd parameter and the autoloader will bind to that object instead of global.
-So consider:
-
-    global.App = require('autoloader')(__dirname + '/lib', require('./myapp'));
-    new App.Foo_Bar();
 
 ## Custom Loaders
 If you pass a function as the 1st argument, autoloader will execute that instead of

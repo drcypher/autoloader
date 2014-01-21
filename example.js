@@ -1,6 +1,7 @@
-var autoload = require("./autoloader");
-autoload(function(key, obj) {
-  console.log("Trying to load " + key)
-});
-autoload(__dirname + '/test');
-console.log(Foo_Bar, Foo_Baz);
+// Load the namespace
+example = require("./autoloader")(__dirname + '/example', {}, 'example');
+
+// Use any class
+var pin = new example.foo.baz.Pin();
+var bar = new example.foo.Bar();
+
